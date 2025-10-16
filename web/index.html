@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SportSnap (Dummy Data)</title>
+    <style>
+      body { font-family: system-ui, Arial, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; }
+      .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+      input, button { font-size: 16px; padding: 10px; }
+      input { width: 100%; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 8px; }
+      button { border: none; border-radius: 8px; cursor: pointer; }
+      .answer { margin-top: 12px; padding: 12px; background: #f7f7f7; border-radius: 8px; }
+      .hint { color: #666; font-size: 14px; margin-top: 8px; }
+      .examples code { background: #f0f0f0; padding: 2px 6px; border-radius: 6px; }
+    </style>
+  </head>
+  <body>
+    <h1>SportSnap — Dummy Sports Chat</h1>
+    <div class="card">
+      <input id="q" placeholder="Try: score of Berlin FC vs Munich United" />
+      <button id="btn">Ask</button>
+      <div id="ans" class="answer" hidden></div>
+      <div class="hint examples">
+        Examples:
+        <code>score of Berlin FC vs Munich United</code>,
+        <code>who scored for Berlin FC</code>,
+        <code>where was Berlin FC vs Munich United</code>
+      </div>
+    </div>
+    <script>
+      async function ask() {
+        const q = document.getElementById('q').value;
+        const res = await fetch('/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q })
+        });
+        const data = await res.json();
+        const ans = document.getElementById('ans');
+        ans.textContent = data.answer || 'No answer';
+        ans.hidden = false;
+      }
+      document.getElementById('btn').addEventListener('click', ask);
+      document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') ask(); });
+    </script>
+  </body>
+</html>
