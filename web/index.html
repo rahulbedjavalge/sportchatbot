@@ -17,7 +17,13 @@
   </head>
   <body>
     <h1>SportSnap — Dummy Sports Chat</h1>
-    <div class="card">
+    <div style="display:flex;gap:12px;margin-bottom:12px;">
+      <button id="tab-ask">Rule-based Ask</button>
+      <button id="tab-chat">AI Chat</button>
+      <button id="tab-flash">Flashcards</button>
+    </div>
+
+    <div class="card" id="ask-card">
       <input id="q" placeholder="Try: score of Berlin FC vs Munich United" />
       <button id="btn">Ask</button>
       <div id="ans" class="answer" hidden></div>
@@ -27,6 +33,17 @@
         <code>who scored for Berlin FC</code>,
         <code>where was Berlin FC vs Munich United</code>
       </div>
+    </div>
+
+    <div class="card" id="chat-card" style="display:none;">
+      <input id="chat-input" placeholder="Say something to the AI..." />
+      <button id="chat-btn">Send</button>
+      <div id="chat-ans" class="answer" hidden></div>
+    </div>
+
+    <div class="card" id="flash-card" style="display:none;">
+      <button id="load-flash">Load Flashcards</button>
+      <div id="flash-list" style="margin-top:8px;"></div>
     </div>
     <script>
       async function ask() {
@@ -43,6 +60,42 @@
       }
       document.getElementById('btn').addEventListener('click', ask);
       document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') ask(); });
+
+      // Tabs
+      function show(id){
+        ['ask-card','chat-card','flash-card'].forEach(c=> document.getElementById(c).style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+      }
+      document.getElementById('tab-ask').addEventListener('click', ()=> show('ask-card'));
+      document.getElementById('tab-chat').addEventListener('click', ()=> show('chat-card'));
+      document.getElementById('tab-flash').addEventListener('click', ()=> show('flash-card'));
+
+      // Chat
+      async function chat(){
+        const m = document.getElementById('chat-input').value;
+        const res = await fetch('/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: m }) });
+        const data = await res.json();
+        const ans = document.getElementById('chat-ans');
+        ans.textContent = data.answer || 'No answer';
+        ans.hidden = false;
+      }
+      document.getElementById('chat-btn').addEventListener('click', chat);
+      document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter') chat(); });
+
+      // Flashcards
+      async function loadFlash(){
+        const res = await fetch('/flashcards');
+        const data = await res.json();
+        const list = document.getElementById('flash-list');
+        list.innerHTML = '';
+        data.forEach(f => {
+          const el = document.createElement('div');
+          el.style.padding='8px'; el.style.borderBottom='1px solid #eee';
+          el.innerHTML = `<strong>Q:</strong> ${f.question}<br/><strong>A:</strong> ${f.answer}`;
+          list.appendChild(el);
+        });
+      }
+      document.getElementById('load-flash').addEventListener('click', loadFlash);
     </script>
   </body>
 </html>
