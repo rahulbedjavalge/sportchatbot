@@ -49,3 +49,17 @@ sportchat/
 ## Notes
 - All data is **mock/dummy** and fictional; names are invented for demonstration.
 - The intent matcher favors simple language; unexpected phrasing returns a helpful hint with examples.
+
+## AI features (optional)
+
+This project can optionally use OpenAI to power the `/chat` endpoint and to generate flashcards.
+
+1. Create a `.env` file in the project root (or copy `.env.example`) and set:
+
+```
+OPENAI_API_KEY=sk-...your-key-here...
+```
+
+2. Install dependencies and run the app as before. If `OPENAI_API_KEY` is not set, the `/chat` endpoint will fall back to the rule-based logic and `/flashcards` will build simple cards from the local DB.
+
+Security: Never commit your real `.env` or API keys into version control. Use the `.env.example` to show required variables.
