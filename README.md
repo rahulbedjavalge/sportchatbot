@@ -63,3 +63,24 @@ OPENAI_API_KEY=sk-...your-key-here...
 2. Install dependencies and run the app as before. If `OPENAI_API_KEY` is not set, the `/chat` endpoint will fall back to the rule-based logic and `/flashcards` will build simple cards from the local DB.
 
 Security: Never commit your real `.env` or API keys into version control. Use the `.env.example` to show required variables.
+
+## How to test the AI endpoints
+
+1. Start the server (see Quickstart above)
+2. Visit http://127.0.0.1:8000/ and use the UI tabs to switch between Rule-based Ask, AI Chat and Flashcards.
+3. To test without UI, use curl or HTTPie to POST to `/chat` or GET `/flashcards`.
+
+Example (PowerShell):
+
+```powershell
+curl -X GET http://127.0.0.1:8000/flashcards
+```
+
+If `OPENAI_API_KEY` is not set the `/chat` endpoint will return a rule-based answer and `/flashcards` will use the DB fallback.
+
+## Deployment notes
+
+- When deploying to a remote host, set `OPENAI_API_KEY` in the host environment (not in `.env`).
+- Use a process manager (gunicorn/uvicorn workers) or a container for production.
+- Consider adding logging, rate-limiting, and API key management if you expose the chat to public users.
+
