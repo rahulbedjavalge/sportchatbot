@@ -84,3 +84,6 @@ If `OPENAI_API_KEY` is not set the `/chat` endpoint will return a rule-based ans
 - Use a process manager (gunicorn/uvicorn workers) or a container for production.
 - Consider adding logging, rate-limiting, and API key management if you expose the chat to public users.
 
+
+
+not completed yet 
