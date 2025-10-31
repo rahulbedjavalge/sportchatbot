@@ -14,54 +14,55 @@
       .hint { color: #666; font-size: 14px; margin-top: 8px; }
       .examples code { background: #f0f0f0; padding: 2px 6px; border-radius: 6px; }
     </style>
-  </head>
-  <body>
-    <h1>SportSnap — Dummy Sports Chat</h1>
-    <div style="display:flex;gap:12px;margin-bottom:12px;">
-      <button id="tab-ask">Rule-based Ask</button>
-      <button id="tab-chat">AI Chat</button>
-      <button id="tab-flash">Flashcards</button>
-    </div>
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>SportSnap — Interactive Sports Chat</title>
+      <link rel="stylesheet" href="/styles.css">
+    </head>
+    <body>
+      <main class="app">
+        <header class="app-header">
+          <h1>SportSnap</h1>
+          <p class="sub">Interactive sports chatbot — rule-based + optional AI</p>
+        </header>
 
-    <div class="card" id="ask-card">
-      <input id="q" placeholder="Try: score of Berlin FC vs Munich United" />
-      <button id="btn">Ask</button>
-      <div id="ans" class="answer" hidden></div>
-      <div class="hint examples">
-        Examples:
-        <code>score of Berlin FC vs Munich United</code>,
-        <code>who scored for Berlin FC</code>,
-        <code>where was Berlin FC vs Munich United</code>
-      </div>
-    </div>
+        <section class="chat-panel">
+          <div id="messages" class="messages" aria-live="polite"></div>
 
-    <div class="card" id="chat-card" style="display:none;">
-      <input id="chat-input" placeholder="Say something to the AI..." />
-      <button id="chat-btn">Send</button>
-      <div id="chat-ans" class="answer" hidden></div>
-    </div>
+          <form id="composer" class="composer" onsubmit="return false;">
+            <input id="input" placeholder="Ask about a match, e.g. 'score of Berlin FC vs Munich United'" autocomplete="off" />
+            <div class="controls">
+              <button id="send" class="btn primary">Send</button>
+              <button id="ai" class="btn">Use AI</button>
+              <button id="cards" class="btn">Flashcards</button>
+            </div>
+          </form>
+        </section>
 
-    <div class="card" id="flash-card" style="display:none;">
-      <button id="load-flash">Load Flashcards</button>
-      <div id="flash-list" style="margin-top:8px;"></div>
-    </div>
-    <script>
-      async function ask() {
-        const q = document.getElementById('q').value;
-        const res = await fetch('/ask', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: q })
-        });
-        const data = await res.json();
-        const ans = document.getElementById('ans');
-        ans.textContent = data.answer || 'No answer';
-        ans.hidden = false;
-      }
-      document.getElementById('btn').addEventListener('click', ask);
-      document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') ask(); });
+        <aside class="examples card">
+          <h3>Examples</h3>
+          <ul>
+            <li>score of Berlin FC vs Munich United</li>
+            <li>who scored for Berlin FC</li>
+            <li>where was Berlin FC vs Munich United</li>
+          </ul>
+        </aside>
 
-      // Tabs
+        <div id="flash-modal" class="modal hidden" role="dialog" aria-modal="true">
+          <div class="modal-content">
+            <header class="modal-header"><h3>Flashcards</h3><button id="close-flash" class="btn close">×</button></header>
+            <div id="flash-list" class="flash-list"></div>
+          </div>
+        </div>
+
+      </main>
+
+      <script src="/app.js"></script>
+    </body>
+  </html>
       function show(id){
         ['ask-card','chat-card','flash-card'].forEach(c=> document.getElementById(c).style.display = 'none');
         document.getElementById(id).style.display = 'block';
